@@ -1,22 +1,35 @@
 import arcade
+import os
 
-def white_circle(x, y):
-    arcade.draw_circle_filled(x,y, 40, arcade.color.WHITE, 40)
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 700
+
+SCREEN_TITLE = "MY BEAUTIFUL GAME"
+
+class Game(arcade.Window):
+
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
+        arcade.set_background_color(arcade.color.BLUE)
+
+        self.shapes = arcade.ShapeElementList()
+
+        lower_colour = (255, 193, 204) # BUBBLE_GUM arcade.color package
+        upper_colour = (219, 166, 123)
+        points = (0, 0), (SCREEN_WIDTH, 0), (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)
+        colors = (lower_colour, lower_colour, upper_colour, upper_colour)
+        background = arcade.create_rectangle_filled_with_colors(points, colors)
+        self.shapes.append(background)
+
+
+    def on_draw(self):
+        arcade.start_render()
+        self.shapes.draw()
 
 
 def main():
 
-    SCREEN_WIDTH = 1600
-    SCREEN_HEIGHT = 900
-    arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, "Game")
-
-    arcade.set_background_color(arcade.color.BLACK)
-
-    arcade.start_render()
-    white_circle(500,500)
-
-    arcade.finish_render()
-
+    Game(SCREEN_WIDTH, SCREEN_HEIGHT,SCREEN_TITLE)
     arcade.run()
 
 if __name__ == "__main__":
