@@ -81,29 +81,25 @@ class Game(arcade.Window):
 
         self.player = arcade.Sprite("my_player.png", PLAYER_SIZING)
 
+        # starting position for player 
+
+        self.player.center_x = 100
+        self.player.center_y = 100
+
+        # set up enemies
+
         # add player to the list
         self.players.append(self.player)
 
-        # list for any walls and platforms
-        self.blocks = arcade.SpriteList()
-        
-        # walls
- 
 
+        my_map = "map.tmx"
 
+        arcade.read_tiled_map(my_map)
 
-        # platforms
+        my_platforms = "Platforms"
 
+        self.blocks = arcade.tilemap.process_layer(my_map, my_platforms, 1)
 
-
-
-
-        # enemies
-        self.enemies = arcade.SpriteList()
-
-
-
-        # starting position for player 
 
 
 
@@ -138,9 +134,19 @@ class Game(arcade.Window):
         # draw enemies
 
 
+    def key_stop(self, key, modifiers):
+        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+            self.player_sprite.change_x = 0
 
-        
-
+    def key_move(self, key, modifiers):
+        if key == arcade.key.LEFT:
+            self.player.change_x = -5
+        elif key == arcade.key.RIGHT:
+            self.player.change_x = 5
+        elif key == arcade.key.UP:
+            self.player.change_y = 5
+        elif key == arcade.key.DOWN:
+            self.player.change_y = 0
 
 
     def on_update(self, delta_time):
