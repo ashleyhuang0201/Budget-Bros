@@ -94,10 +94,24 @@ class Game(arcade.Window):
         self.player_sprite = arcade.Sprite("player1_image/female_back.png", 0.5)
 
         # set up starting position for player
-        self.player_sprite.center_x = 400
+        self.player_sprite.center_x = 100
         self.player_sprite.center_y = 400
 
         # set up enemies
+        self.enemies = arcade.SpriteList()
+
+        starting_position = 128
+        for i in range(0,5):
+            enemy = arcade.Sprite("player1_image/my_player.png", 0.1)
+            enemy.bottom = 128
+            enemy.left = starting_position
+            enemy.boundary_right = 1800
+            enemy.boundary_left = 0
+            # enemies speed, change this for harder difficulty
+            enemy.change_x = 4
+            self.enemies.append(enemy)
+            starting_position += 400
+
 
         # add player_sprite to the list
         self.players.append(self.player_sprite)
@@ -113,14 +127,11 @@ class Game(arcade.Window):
         my_map = arcade.read_tiled_map(map_name, 1)
         map_array = my_map.layers_int_data[platform_layer]
 
-        # self.end_of_map = 
-
         # walls and background to draw out later
         # change variables later
 
         self.blocks = arcade.generate_sprites(my_map, platform_layer, 1)
         self.background_list = arcade.generate_sprites(my_map, background_layer, 1)
-       
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.blocks, GRAVITY)
 
@@ -157,6 +168,7 @@ class Game(arcade.Window):
         self.players.draw()
         
         # draw enemies
+        self.enemies.draw()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
@@ -176,10 +188,6 @@ class Game(arcade.Window):
 
     def on_update(self, delta_time):
         self.timer += delta_time
-
-        self.physics_engine.update()
-
-
 
         # from https://arcade.academy/examples/sprite_move_scrolling.html
         changed = False
@@ -220,8 +228,42 @@ class Game(arcade.Window):
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
 
+        # Did the player fall off the map?
+        if self.player_sprite.center_y < -100:
+            self.player_sprite.center_x = 100
+            self.player_sprite.center_y = 100
+
+            # Set the camera to the start
+            self.view_left = 0
+            self.view_bottom = 0
+            changed_viewport = True
+            self.game_over = True
+
+        if not self.game_over:
+            self.enemies.update()
+            # for every enemy, check if they hit anything
+            for enemy in self.enemies:
+                # If the enemy hit a wall, change direction
+                if len(arcade.check_for_collision_with_list(enemy, self.blocks)) > 0:
+                    enemy.change_x *= -1
 
 
+
+        if len(arcade.check_for_collision_with_list(self.player_sprite, self.enemies)) > 0:
+            self.game_over = True
+            self.player_sprite.center_x = 400
+            self.player_sprite.center_y = 400
+
+            # Set the camera to the start
+            self.view_left = 0
+            self.view_bottom = 0
+            changed_viewport = True
+
+        if self.game_over == True:
+            pass  
+
+        self.physics_engine.update()
+            
 def main():
 
     window = Game()
