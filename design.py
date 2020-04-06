@@ -15,10 +15,27 @@ RIGHT_VIEWPORT_MARGIN = 150
 BOTTOM_VIEWPORT_MARGIN = 50
 TOP_VIEWPORT_MARGIN = 100
 
-class Game(arcade.Window):
+WIDTH = 1200
+HEIGHT = 700
+
+class MenuView(arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.LIGHT_PINK)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("WELCOME TO MY GAME: CLICK TO PLAY", 600, 350, arcade.color.BLACK, font_size=25, anchor_x="center")
+        
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
+
+class GameView(arcade.View):
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
         self.score = 0
         self.timer = 0.0
         self.physics_engine = None
@@ -251,6 +268,10 @@ class Game(arcade.Window):
 
         if len(arcade.check_for_collision_with_list(self.player_sprite, self.enemies)) > 0:
             self.game_over = True
+
+        if self.game_over == True:
+            game_over_view = GameOverView()
+            self.window.show_view(game_over_view)
             self.player_sprite.center_x = 400
             self.player_sprite.center_y = 400
 
@@ -259,15 +280,26 @@ class Game(arcade.Window):
             self.view_bottom = 0
             changed_viewport = True
 
-        if self.game_over == True:
-            pass  
-
         self.physics_engine.update()
+
+class GameOverView(arcade.View):
+    def on_show(self):
+        arcade.set_background_color(arcade.color.GRAY_BLUE)
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("Game Over !! PRESS ESCAPE TO PLAY AGAIN", 600, 350, arcade.color.WHITE, font_size=25, anchor_x="center")
+
+    def on_key_press(self, key, _modifiers):
+        if key == arcade.key.ESCAPE:
+            menu_view = MenuView()
+            self.window.show_view(menu_view)
             
 def main():
 
-    window = Game()
-    window.setup()
+    window = arcade.Window(WIDTH, HEIGHT, "MY BEAUTIFUL GAME")
+    menu_view = MenuView()
+    window.show_view(menu_view)
     arcade.run()
 
 if __name__ == "__main__":
