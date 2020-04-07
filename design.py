@@ -62,35 +62,6 @@ class GameView(arcade.View):
         circle = arcade.create_ellipse_filled(600,500,60,60,arcade.color.WHITE_SMOKE,0)
         self.shapes_list.append(circle)
         
-        '''
-        # Creating buildings
-        for x in range(0,1200):
-
-            if x % 40 == 0 and x % 80 != 0 :
-                colour1 = (86, 60, 92)
-                colour2 = (216, 145, 239)
-                points = (x, 0), (x+40, 0), (x+40, 100), (x, 100)
-                colours = (colour1, colour1, colour2, colour2)
-                rect = arcade.create_rectangle_filled_with_colors(points, colours)
-                self.shapes_list.append(rect)
-
-            elif x % 80 == 0 and x % 50 != 0:
-                colour1 = (255, 248, 231)
-                colour2 = (21, 96, 189)
-                points = (x, 0), (x+20, 0), (x+20, 200), (x, 200)
-                colours = (colour1, colour1, colour2, colour2)
-                rect = arcade.create_rectangle_filled_with_colors(points, colours)
-                self.shapes_list.append(rect)
-
-            elif x % 60 == 0 and x % 120 != 0:
-                colour1 = (27, 27, 27)
-                colour2 = (27, 77, 62)
-                points = (x, 0), (x+40, 0), (x+40, 300), (x, 300)
-                colours = (colour1, colour1, colour2, colour2)
-                rect = arcade.create_rectangle_filled_with_colors(points, colours)
-                self.shapes_list.append(rect)
-
-        '''
         # MOVING SCREEN TRACKING
         self.view_bottom = 0
         self.view_left = 0
@@ -267,7 +238,15 @@ class GameView(arcade.View):
 
 
         if len(arcade.check_for_collision_with_list(self.player_sprite, self.enemies)) > 0:
-            self.game_over = True
+            pause_screen = GamePauseView(self)
+            self.window.show_view(pause_screen)
+            # reset the camera so that when the pause resumes, it does not cause the player to continue colliding with the enemy
+            self.player_sprite.center_x = 400
+            self.player_sprite.center_y = 400
+            self.view_left = 0
+            self.view_bottom = 0
+            changed_viewport = True
+
 
         if self.game_over == True:
             game_over_view = GameOverView()
@@ -294,6 +273,27 @@ class GameOverView(arcade.View):
         if key == arcade.key.ESCAPE:
             menu_view = MenuView()
             self.window.show_view(menu_view)
+
+class GamePauseView(arcade.View):
+    def __init__(self, game_view):
+        super().__init__()
+        self.game_view = game_view
+
+    def on_show(self):
+        arcade.set_background_color(arcade.color.LIGHT_CORAL)
+    
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_text("HELLO THIS IS THE FIRST PAUSE SCREEN", 600, 350, arcade.color.ALICE_BLUE, font_size=25, anchor_x="center")
+    
+    def on_key_press(self, key, _modifiers):
+        if key != arcade.key.A:
+            game_over = GameOverView()
+            self.window.show_view(game_over)
+        else:
+            self.window.show_view(self.game_view)
+        
+
             
 def main():
 
