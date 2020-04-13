@@ -42,7 +42,7 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
         self.score = 0
-        self.timer = 0.0
+        self.total_time = 0.0
         self.physics_engine = None
         self.blocks = None
         self.players= None
@@ -73,7 +73,7 @@ class GameView(arcade.View):
 
     # when game restarts
     def setup(self):
-        self.timer = 0.0
+        self.total_time = 0.0
 
         # set up scrolling
         self.view_bottom = 0
@@ -147,10 +147,10 @@ class GameView(arcade.View):
             shape.draw()
 
         # calculate minutes
-        minutes = int(self.timer) // 60
+        minutes = int(self.total_time) // 60
 
         # calculate seconds 
-        seconds = int(self.timer) % 60
+        seconds = int(self.total_time) % 60
 
         output = f"Time: {minutes:02d}:{seconds:02d}"
 
@@ -187,7 +187,7 @@ class GameView(arcade.View):
     
 
     def on_update(self, delta_time):
-        self.timer += delta_time
+        self.total_time += delta_time
 
         # from https://arcade.academy/examples/sprite_move_scrolling.html
         changed = False
@@ -250,11 +250,12 @@ class GameView(arcade.View):
             list_of_questions = [GamePauseView(self),GamePauseView2(self),GamePauseView3(self), \
             GamePauseView4(self), GamePauseView5(self), GamePauseView6(self), GamePauseView7(self), \
             GamePauseView8(self)]
-      
+         
 
             pause_screen = random.choice(list_of_questions)
+            pause_screen.total_time = self.total_time
             self.window.show_view(pause_screen)
-
+            
 
             # reset the camera so that when the pause resumes, it does not cause the player to continue colliding with the enemy
             self.player_sprite.center_x = 400
@@ -265,8 +266,12 @@ class GameView(arcade.View):
             arcade.set_viewport(self.view_left,SCREEN_WIDTH, self.view_bottom, SCREEN_HEIGHT)
 
         self.physics_engine.update()
-
+list_time = []
 class GameOverView(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.total_time = 0
+
     def on_show(self):
         arcade.set_background_color(arcade.color.GRAY_BLUE)
 
@@ -274,17 +279,59 @@ class GameOverView(arcade.View):
         arcade.start_render()
         texture = arcade.load_texture("player_map/game_over.png")
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
+        
+        total_time_taken = f"{round(self.total_time, 2)} seconds"
+        arcade.draw_text(f"TIME TAKEN: {total_time_taken}",WIDTH/2, 370, arcade.color.GRAY,font_size=17, anchor_x="center")
+       
+        # append if the time is not already in the list and if there is less than 10 items
+        if round(self.total_time,2) not in list_time and len(list_time) < 10:
+            list_time.append(round(self.total_time,2))
+        # if there is more than 10 items and the new item is larger than the smallest item,
+        # remove the smallest time record and add in the new time record
+        elif round(self.total_time,2) not in list_time and len(list_time) >= 10:
+            list_time.sort()
+            if round(self.total_time,2) > list_time[0]:
+                list_time.remove(list_time[0])
+                list_time.append(round(self.total_time,2))
+
+    def on_key_press(self, key, _modifiers):
+        if key == arcade.key.ESCAPE:
+            leaderboard = Leaderboard()
+            self.window.show_view(leaderboard)
+
+
+class Leaderboard(arcade.View):
+    def __init__(self):
+        super().__init__()
+        self.total_time = 0
+
+    def on_show(self):
+        arcade.set_background_color(arcade.color.GRAY_BLUE)
+
+    def on_draw(self):
+        arcade.start_render()
+
+        # texture of TOP 10 RECORDS
+
+
+        list_time.sort()
+        j = 100
+        for i in range(len(list_time)):
+            arcade.draw_text(str(list_time[i]),WIDTH/2, j, arcade.color.WHITE,font_size=25, anchor_x="center")
+            j += 20
 
     def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:
             menu_view = MenuView()
             self.window.show_view(menu_view)
+    
 
 # append all of them to one list and draw them 
 class GamePauseView(arcade.View):
 
     def __init__(self, game_view):
         super().__init__()
+        self.total_time = 0
         self.game_view = game_view
 
     def on_draw(self):
@@ -296,15 +343,20 @@ class GamePauseView(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.B:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
+
             else:
                 self.window.show_view(self.game_view)
+
+
 
 class GamePauseView2(arcade.View):
 
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.total_time = 0
     
     def on_draw(self):
         arcade.start_render()
@@ -315,6 +367,7 @@ class GamePauseView2(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.C:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
             else:
                 self.window.show_view(self.game_view)
@@ -323,6 +376,7 @@ class GamePauseView3(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.total_time = 0
     
     def on_draw(self):
         arcade.start_render()
@@ -333,6 +387,7 @@ class GamePauseView3(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.A:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
             else:
                 self.window.show_view(self.game_view)
@@ -341,6 +396,7 @@ class GamePauseView4(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.total_time = 0
     
     def on_draw(self):
         arcade.start_render()
@@ -351,6 +407,7 @@ class GamePauseView4(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.D:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
             else:
                 self.window.show_view(self.game_view)
@@ -359,6 +416,7 @@ class GamePauseView5(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.total_time = 0
     
     def on_draw(self):
         arcade.start_render()
@@ -369,6 +427,7 @@ class GamePauseView5(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.A:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
             else:
                 self.window.show_view(self.game_view)
@@ -377,6 +436,7 @@ class GamePauseView6(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.total_time = 0
     
     def on_draw(self):
         arcade.start_render()
@@ -387,6 +447,7 @@ class GamePauseView6(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.D:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
             else:
                 self.window.show_view(self.game_view)
@@ -395,6 +456,7 @@ class GamePauseView7(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.total_time = 0
     
     def on_draw(self):
         arcade.start_render()
@@ -405,6 +467,7 @@ class GamePauseView7(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.A:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
             else:
                 self.window.show_view(self.game_view)
@@ -413,6 +476,7 @@ class GamePauseView8(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
+        self.total_time = 0
     
     def on_draw(self):
         arcade.start_render()
@@ -423,6 +487,7 @@ class GamePauseView8(arcade.View):
         if key != arcade.key.RIGHT and key != arcade.key.LEFT and key != arcade.key.UP and key != arcade.key.DOWN:
             if key != arcade.key.D:
                 game_over = GameOverView()
+                game_over.total_time = self.total_time
                 self.window.show_view(game_over)
             else:
                 self.window.show_view(self.game_view)
@@ -434,6 +499,7 @@ def main():
     menu_view = MenuView()
     window.show_view(menu_view)
     arcade.run()
+    
 
 if __name__ == "__main__":
     main()
