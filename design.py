@@ -312,7 +312,7 @@ class GamePauseView2(arcade.View):
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
     def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
+        if key != arcade.key.C:
             game_over = GameOverView()
             self.window.show_view(game_over)
         else:
@@ -329,7 +329,7 @@ class GamePauseView3(arcade.View):
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
     def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
+        if key != arcade.key.A:
             game_over = GameOverView()
             self.window.show_view(game_over)
         else:
@@ -346,7 +346,7 @@ class GamePauseView4(arcade.View):
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
     def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
+        if key != arcade.key.D:
             game_over = GameOverView()
             self.window.show_view(game_over)
         else:
@@ -363,7 +363,7 @@ class GamePauseView5(arcade.View):
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
     def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
+        if key != arcade.key.A:
             game_over = GameOverView()
             self.window.show_view(game_over)
         else:
@@ -380,7 +380,7 @@ class GamePauseView6(arcade.View):
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
     def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
+        if key != arcade.key.D:
             game_over = GameOverView()
             self.window.show_view(game_over)
         else:
@@ -397,7 +397,7 @@ class GamePauseView7(arcade.View):
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
     def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
+        if key != arcade.key.A:
             game_over = GameOverView()
             self.window.show_view(game_over)
         else:
@@ -414,41 +414,7 @@ class GamePauseView8(arcade.View):
         arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
     def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
-            game_over = GameOverView()
-            self.window.show_view(game_over)
-        else:
-            self.window.show_view(self.game_view)
-
-class GamePauseView9(arcade.View):
-    def __init__(self, game_view):
-        super().__init__()
-        self.game_view = game_view
-    
-    def on_draw(self):
-        arcade.start_render()
-        texture = arcade.load_texture("questions/sec9.png")
-        arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
-
-    def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
-            game_over = GameOverView()
-            self.window.show_view(game_over)
-        else:
-            self.window.show_view(self.game_view)
-
-class GamePauseView10(arcade.View):
-    def __init__(self, game_view):
-        super().__init__()
-        self.game_view = game_view
-    
-    def on_draw(self):
-        arcade.start_render()
-        texture = arcade.load_texture("questions/sec10.png")
-        arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
-
-    def on_key_press(self, key, _modifiers):
-        if key != arcade.key.B:
+        if key != arcade.key.D:
             game_over = GameOverView()
             self.window.show_view(game_over)
         else:
