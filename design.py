@@ -6,7 +6,7 @@ import time
 SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
 
-GRAVITY = 1
+GRAVITY = 0.8
 
 SCREEN_TITLE = "MY BEAUTIFUL GAME"
 PLAYER_MOVEMENT_SPEED = 5
@@ -84,7 +84,7 @@ class GameView(arcade.View):
         self.blocks = arcade.SpriteList()
 
         # set up player 
-        self.player_sprite = arcade.Sprite("player1_image/female_back.png", 0.5)
+        self.player_sprite = arcade.Sprite("player1_image/blob.png", 0.05)
 
         # set up starting position for player
         self.player_sprite.center_x = 100
@@ -101,19 +101,19 @@ class GameView(arcade.View):
             enemy.boundary_right = 1800
             enemy.boundary_left = 0
             # enemies speed, change this for harder difficulty
-            enemy.change_x = 4
+            enemy.change_x = 3
             self.enemies.append(enemy)
-            starting_position += 400
+            starting_position += 500
 
         start_lol = 100
-        for j in range(0,5):
+        for j in range(0,2):
             enemy =  arcade.Sprite("player1_image/my_player.png", 0.1)
             enemy.bottom = 128
             enemy.left = start_lol
             enemy.boundary_right = 1800
             enemy.boundary_left = 0
             # enemies speed, change this for harder difficulty
-            enemy.change_x = 7
+            enemy.change_x = 5
             self.enemies.append(enemy)
             start_lol += 500
 
