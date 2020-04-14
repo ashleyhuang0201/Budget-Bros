@@ -234,7 +234,6 @@ class GameView(arcade.View):
             # Set the camera to the start
             self.view_left = 0
             self.view_bottom = 0
-            changed_viewport = True
             self.game_over = True
 
         if not self.game_over:
