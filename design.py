@@ -312,13 +312,17 @@ class Leaderboard(arcade.View):
         arcade.start_render()
 
         # texture of TOP 10 RECORDS
+        texture = arcade.load_texture("player_map/leaderboard.png")
+        arcade.draw_scaled_texture_rectangle(WIDTH/2,HEIGHT/2, texture,1,0) 
 
 
         list_time.sort()
         j = 100
         for i in range(len(list_time)):
             arcade.draw_text(str(list_time[i]),WIDTH/2, j, arcade.color.WHITE,font_size=25, anchor_x="center")
-            j += 20
+            j += 40
+
+        arcade.draw_text("PRESS ESC TO CONTINUE",WIDTH/2, 510, arcade.color.WHITE,font_size=15, anchor_x="center")
 
     def on_key_press(self, key, _modifiers):
         if key == arcade.key.ESCAPE:
